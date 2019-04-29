@@ -5,7 +5,8 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/core/sdk:3.0-stretch AS build
 WORKDIR /src
 COPY ["hospital-service-loader-tlhow/hospital-service-loader-tlhow.csproj", "hospital-service-loader-tlhow/"]
-RUN dotnet restore "hospital-service-loader-tlhow/hospital-service-loader-tlhow.csproj"
+COPY nuget.config ./
+RUN dotnet restore --configfile nuget.config "hospital-service-loader-tlhow/hospital-service-loader-tlhow.csproj"
 COPY . .
 WORKDIR "/src/hospital-service-loader-tlhow"
 RUN dotnet build "hospital-service-loader-tlhow.csproj" -c Release -o /app
