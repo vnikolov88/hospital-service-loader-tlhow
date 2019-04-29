@@ -1,13 +1,17 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using AutoMapper;
 
 namespace HospitalService.Loader.TLHOW
 {
     public class StartupOptions
     {
         public string DataExportUrl { get; set; }
-        public string RedisConnectionInfo { get; set; }
+
+        public int DataExportPullIntervalMin { get; set; }
+
+        public string HospitalServiceHost { get; set; }
     }
 
     public class Program
@@ -24,6 +28,13 @@ namespace HospitalService.Loader.TLHOW
                 {
                     services.Configure<StartupOptions>(hostBuilder.Configuration);
                     services.AddOptions<StartupOptions>("StartupOptions");
+                    var config = new MapperConfiguration(cfg =>
+                    {
+                        cfg.AddProfile(new DomainProfile());
+                    });
+
+                    var mapper = config.CreateMapper();
+                    services.AddSingleton(mapper);
                     services.AddHostedService<Worker>();
                 });
     }

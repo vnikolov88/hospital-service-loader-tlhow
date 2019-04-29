@@ -1,5 +1,4 @@
-using Common.TLHOW.Models;
-using Common.TLHOW.Services;
+using HospitalService.Loader.TLHOW.Models;
 using Flurl.Http;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -7,23 +6,26 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace HospitalService.Loader.TLHOW
 {
     public class Worker : BackgroundService
     {
-        private readonly IStorageService _storageService;
-        private readonly TimeSpan LoadInterval = TimeSpan.FromMinutes(60);
+        private readonly TimeSpan loadInterval;
         private readonly ILogger<Worker> _logger;
         private readonly StartupOptions _options;
+        private readonly IMapper _mapper;
 
         public Worker(
             IOptions<StartupOptions> options,
-            ILogger<Worker> logger)
+            ILogger<Worker> logger,
+            IMapper mapper)
         {
             _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _storageService = new RedisStorageService(_options.RedisConnectionInfo);
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            loadInterval = TimeSpan.FromMinutes(_options.DataExportPullIntervalMin);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -36,14 +38,16 @@ namespace HospitalService.Loader.TLHOW
                     var tlhowData = await _options.DataExportUrl.GetJsonAsync<TLHOWData>();
                     foreach(var record in tlhowData.ClinicGroup)
                     {
-                        await _storageService.UpdateCompanyAsync(record.Value, stoppingToken);
+                        var internalHospitalData = _mapper.Map<Contracts.V2.Company>(record.Value);
+                        await $"{_options.HospitalServiceHost}/api/v2/hospital/update-company"
+                            .PostJsonAsync(internalHospitalData, stoppingToken);
                     }
                 }
                 catch(Exception ex)
                 {
                     _logger.LogError("Error pulling data from TLHOW {error}", ex);
                 }
-                await Task.Delay(LoadInterval, stoppingToken);
+                await Task.Delay(loadInterval, stoppingToken);
             }
         }
     }
