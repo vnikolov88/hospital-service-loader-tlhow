@@ -4,9 +4,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using Consul;
 
 namespace HospitalService.Loader.TLHOW
 {
@@ -28,6 +30,19 @@ namespace HospitalService.Loader.TLHOW
             loadInterval = TimeSpan.FromMinutes(_options.DataExportPullIntervalMin);
         }
 
+        protected async Task<string> GetServiceHostAsync(string serviceName)
+        {
+            using (var consul = new ConsulClient(x => x.Address = new Uri(_options.ConsulRestUrl)))
+            {
+                var consulResponse = await consul.Catalog.Service(serviceName);
+                var catalogServices = consulResponse.Response;
+                if (catalogServices.Count() > 0)
+                    return catalogServices.Select(x => $"{x.ServiceAddress}:{x.ServicePort}").FirstOrDefault();
+                else
+                    throw new ConsulRequestException($"Missing {serviceName}", consulResponse.StatusCode);
+            }
+        }
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
@@ -36,10 +51,11 @@ namespace HospitalService.Loader.TLHOW
                 try
                 {
                     var tlhowData = await _options.DataExportUrl.GetJsonAsync<TLHOWData>();
-                    foreach(var record in tlhowData.ClinicGroup)
+                    var hospitalServiceHost = await GetServiceHostAsync(_options.HospitalServiceName);
+                    foreach (var record in tlhowData.ClinicGroup)
                     {
                         var internalHospitalData = _mapper.Map<Contracts.V2.Company>(record.Value);
-                        await $"{_options.HospitalServiceHost}/api/v2/hospital/update-company"
+                        await $"http://{hospitalServiceHost}/api/v2/hospital/update-company"
                             .PostJsonAsync(internalHospitalData, stoppingToken);
                     }
                 }
