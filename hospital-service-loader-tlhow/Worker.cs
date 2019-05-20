@@ -15,6 +15,7 @@ namespace HospitalService.Loader.TLHOW
     public class Worker : BackgroundService
     {
         private readonly TimeSpan loadInterval;
+        private readonly TimeSpan retryStageInterval;
         private readonly ILogger<Worker> _logger;
         private readonly StartupOptions _options;
         private readonly IMapper _mapper;
@@ -28,6 +29,7 @@ namespace HospitalService.Loader.TLHOW
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             loadInterval = TimeSpan.FromMinutes(_options.DataExportPullIntervalMin);
+            retryStageInterval = TimeSpan.FromMinutes(_options.RetryStageIntervalMin);
         }
 
         protected async Task<string> GetServiceHostAsync(string serviceName)
@@ -48,21 +50,55 @@ namespace HospitalService.Loader.TLHOW
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                try
+                #region Stage TLHOW Pull
+                TLHOWData tlhowData = null;
+                while (tlhowData == null)
                 {
-                    var tlhowData = await _options.DataExportUrl.GetJsonAsync<TLHOWData>();
-                    var hospitalServiceHost = await GetServiceHostAsync(_options.HospitalServiceName);
-                    foreach (var record in tlhowData.ClinicGroup)
+                    try
+                    {
+                        tlhowData = await _options.DataExportUrl.GetJsonAsync<TLHOWData>();
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError("Error pulling data from TLHOW {error}", ex);
+                        await Task.Delay(retryStageInterval, stoppingToken);
+                    }
+                }
+                #endregion Stage TLHOW Pull
+
+                #region Stage Find Hospital service
+                string hospitalServiceHost = string.Empty;
+                while(hospitalServiceHost == string.Empty)
+                {
+                    try
+                    {
+                        hospitalServiceHost = await GetServiceHostAsync(_options.HospitalServiceName);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError("Error in finding hospital service {error}", ex);
+                        await Task.Delay(retryStageInterval, stoppingToken);
+                    }
+
+                }
+                #endregion Stage Find Hospital service
+
+                foreach (var record in tlhowData.ClinicGroup)
+                {
+                    #region Stage push to Hospital service
+                    try
                     {
                         var internalHospitalData = _mapper.Map<Contracts.V2.Company>(record.Value);
                         await $"http://{hospitalServiceHost}/api/v2/hospital/update-company"
                             .PostJsonAsync(internalHospitalData, stoppingToken);
                     }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError("Error pushing data to hospital-service {error}", ex);
+                    }
+                    #endregion Stage push to Hospital service
                 }
-                catch(Exception ex)
-                {
-                    _logger.LogError("Error pulling data from TLHOW {error}", ex);
-                }
+
                 await Task.Delay(loadInterval, stoppingToken);
             }
         }
