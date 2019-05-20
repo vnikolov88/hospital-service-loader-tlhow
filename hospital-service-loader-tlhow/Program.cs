@@ -11,6 +11,8 @@ namespace HospitalService.Loader.TLHOW
 
         public int DataExportPullIntervalMin { get; set; }
 
+        public int RetryStageIntervalMin { get; set; }
+
         public string HospitalServiceName { get; set; }
 
         public string ConsulRestUrl { get; set; }
