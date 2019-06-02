@@ -11,6 +11,9 @@ namespace HospitalService.Loader.TLHOW
                 .ForMember(d => d.GUID, o => o.MapFrom(s => s.GUID))
                 .ForMember(d => d.Hospitals, o => o.MapFrom(s => s.Hospitals))
                 .ForMember(d => d.Name, o => o.MapFrom(s => s.Name))
+                .ForMember(d => d.DescriptionHtml, o => o.MapFrom(s => s.DescriptionHtml))
+                .ForMember(d => d.Certificates, o => o.MapFrom(s => s.Certificates))
+                .ForMember(d => d.Personal, o => o.MapFrom(s => s.Personal))
                 .ForMember(d => d.Pictures, o => o.MapFrom(s => s.Pictures))
                 .ForMember(d => d.SortOrder, o => o.MapFrom(s => s.SortOrder));
 
@@ -61,6 +64,7 @@ namespace HospitalService.Loader.TLHOW
                 .ForMember(d => d.Doctors, o => o.MapFrom(s => s.Doctors))
                 .ForMember(d => d.GUID, o => o.MapFrom(s => s.GUID))
                 .ForMember(d => d.Name, o => o.MapFrom(s => s.Name))
+                .ForMember(d => d.Type, o => o.MapFrom(s => s.Type))
                 .ForMember(d => d.Pictures, o => o.MapFrom(s => s.Pictures))
                 .ForMember(d => d.SortOrder, o => o.MapFrom(s => s.SortOrder))
                 .ForMember(d => d.WorktimeMessageHtml, o => o.MapFrom(s => s.WorktimeMessageHtml));
@@ -69,6 +73,25 @@ namespace HospitalService.Loader.TLHOW
                 .ForMember(d => d.ExternalUrl, o => o.MapFrom(s => s.ExternalUrl))
                 .ForMember(d => d.Name, o => o.MapFrom(s => s.Name))
                 .ForMember(d => d.Pictures, o => o.MapFrom(s => s.Pictures));
+
+            CreateMap<Models.TLHOWDepartmentType, Contracts.V2.DepartmentType>()
+                .ConvertUsing(new DepartmentTypeConvertor());
+        }
+    }
+
+    internal class DepartmentTypeConvertor : ITypeConverter<Models.TLHOWDepartmentType, Contracts.V2.DepartmentType>
+    {
+        public Contracts.V2.DepartmentType Convert(Models.TLHOWDepartmentType source, Contracts.V2.DepartmentType destination, ResolutionContext context)
+        {
+            switch (source)
+            {
+                case Models.TLHOWDepartmentType.Center:
+                    return Contracts.V2.DepartmentType.Center;
+                case Models.TLHOWDepartmentType.Regular:
+                    return Contracts.V2.DepartmentType.Regular;
+                default:
+                    return Contracts.V2.DepartmentType.Regular;
+            }
         }
     }
 }

@@ -31,6 +31,9 @@ namespace HospitalService.Loader.TLHOW.Models
         [JsonProperty("FA")]
         public string DepartmentClassification { get; set; }
 
+        [JsonProperty("type")]
+        public TLHOWDepartmentType Type { get; set; }
+
         [JsonProperty("chief_doctors")]
         public TLHOWDoctor[] Doctors { get; set; }
     }
