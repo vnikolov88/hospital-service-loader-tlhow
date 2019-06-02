@@ -10,6 +10,9 @@ namespace HospitalService.Loader.TLHOW.Models
         [JsonProperty("Name")]
         public string Name { get; set; }
 
+        [JsonProperty("Desc")]
+        public string DescriptionHtml { get; set; }
+
         [JsonProperty("Address")]
         public TLHOWAddress Address { get; set; }
 
@@ -21,5 +24,11 @@ namespace HospitalService.Loader.TLHOW.Models
 
         [JsonProperty("Hospital")]
         public TLHOWHospital[] Hospitals { get; set; }
+
+        [JsonProperty("Certificates")]
+        public TLHOWCertificate[] Certificates { get; set; }
+
+        [JsonProperty("Personal")]
+        public TLHOWDoctor[] Personal { get; set; }
     }
 }
