@@ -29,6 +29,15 @@ namespace HospitalService.Loader.TLHOW
                 .ForMember(d => d.StreetNr, o => o.MapFrom(s => s.StreetNr))
                 .ForMember(d => d.Url, o => o.MapFrom(s => s.Url));
 
+            CreateMap<Models.TLHOWAddress, Contracts.V2.SocialInformation>()
+                .ForMember(d => d.FBUrl, o => o.MapFrom(s => s.FBUrl))
+                .ForMember(d => d.TWUrl, o => o.MapFrom(s => s.TWUrl))
+                .ForMember(d => d.DataPrivacyUrl, o => o.MapFrom(s => s.DataPrivacyUrl))
+                .ForMember(d => d.ImprintUrl, o => o.MapFrom(s => s.ImprintUrl))
+                .ForMember(d => d.JobsUrl, o => o.MapFrom(s => s.JobsUrl))
+                .ForMember(d => d.NewsUrl, o => o.MapFrom(s => s.NewsUrl))
+                .ForMember(d => d.EventsUrl, o => o.MapFrom(s => s.EventsUrl));
+
             // Note: the current host of TLHOW is not properly setup for CORS, we do this as a workaround
             CreateMap<Models.TLHOWPicture, Contracts.V2.Picture>()
                 .ForMember(d => d.SizeL, o => o.MapFrom(s => s.SizeL.Replace("https://tlhow.cms.prelaunchweb.de", "https://www.tlhow.com")))
@@ -50,6 +59,7 @@ namespace HospitalService.Loader.TLHOW
 
             CreateMap<Models.TLHOWHospital, Contracts.V2.Hospital>()
                 .ForMember(d => d.Address, o => o.MapFrom(s => s.Address))
+                .ForMember(d => d.Social, o => o.MapFrom(s => s.Address))
                 .ForMember(d => d.Departments, o => o.MapFrom(s => s.Departments))
                 .ForMember(d => d.GUID, o => o.MapFrom(s => s.GUID))
                 .ForMember(d => d.Name, o => o.MapFrom(s => s.Name))
