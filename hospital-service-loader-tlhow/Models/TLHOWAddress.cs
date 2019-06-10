@@ -33,5 +33,26 @@ namespace HospitalService.Loader.TLHOW.Models
 
         [JsonProperty("Longitude")]
         public double? Longitude { get; set; }
+
+        [JsonProperty("fblink")]
+        public string FBUrl { get; set; }
+
+        [JsonProperty("twlink")]
+        public string TWUrl { get; set; }
+
+        [JsonProperty("dataprivacylink")]
+        public string DataPrivacyUrl { get; set; }
+
+        [JsonProperty("imprintlink")]
+        public string ImprintUrl { get; set; }
+
+        [JsonProperty("slink")]
+        public string JobsUrl { get; set; }
+
+        [JsonProperty("rsslink")]
+        public string NewsUrl { get; set; }
+
+        [JsonProperty("eventlink")]
+        public string EventsUrl { get; set; }
     }
 }
