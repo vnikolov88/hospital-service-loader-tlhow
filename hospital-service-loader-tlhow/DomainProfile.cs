@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace HospitalService.Loader.TLHOW
 {
@@ -9,7 +11,7 @@ namespace HospitalService.Loader.TLHOW
             CreateMap<Models.TLHOWCompany, Contracts.V2.Company>()
                 .ForMember(d => d.Address, o => o.MapFrom(s => s.Address))
                 .ForMember(d => d.GUID, o => o.MapFrom(s => s.GUID))
-                .ForMember(d => d.Hospitals, o => o.MapFrom(s => s.Hospitals))
+                .ForMember(d => d.Hospitals, o => o.MapFrom(s => (new List<Models.TLHOWHospital>()).Concat(s.Hospitals).Concat(s.MedicalCenters)) )
                 .ForMember(d => d.Name, o => o.MapFrom(s => s.Name))
                 .ForMember(d => d.DescriptionHtml, o => o.MapFrom(s => s.DescriptionHtml))
                 .ForMember(d => d.Certificates, o => o.MapFrom(s => s.Certificates))
