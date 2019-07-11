@@ -77,6 +77,7 @@ namespace HospitalService.Loader.TLHOW
                 .ForMember(d => d.Type, o => o.MapFrom(s => s.Type))
                 .ForMember(d => d.Pictures, o => o.MapFrom(s => s.Pictures))
                 .ForMember(d => d.SortOrder, o => o.MapFrom(s => s.SortOrder))
+                .ForMember(d => d.PersonalHeadline, o => o.MapFrom(s => s.PersonalHeadline))
                 .ForMember(d => d.WorktimeMessageHtml, o => o.MapFrom(s => s.WorktimeMessageHtml));
 
             CreateMap<Models.TLHOWCertificate, Contracts.V2.Certificate>()
