@@ -25,6 +25,9 @@ namespace HospitalService.Loader.TLHOW.Models
         [JsonProperty("Hospital")]
         public TLHOWHospital[] Hospitals { get; set; }
 
+        [JsonProperty("MVZ")]
+        public TLHOWHospital[] MedicalCenters { get; set; }
+
         [JsonProperty("Certificates")]
         public TLHOWCertificate[] Certificates { get; set; }
 
