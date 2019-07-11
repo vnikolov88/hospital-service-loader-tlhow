@@ -36,5 +36,8 @@ namespace HospitalService.Loader.TLHOW.Models
 
         [JsonProperty("chief_doctors")]
         public TLHOWDoctor[] Doctors { get; set; }
+
+        [JsonProperty("HdlApp")]
+        public string PersonalHeadline { get; set; }
     }
 }
