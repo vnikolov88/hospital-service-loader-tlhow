@@ -19,8 +19,14 @@ namespace HospitalService.Loader.TLHOW.Models
         [JsonProperty("Picture")]
         public TLHOWPicture[] Pictures { get; set; }
 
+        [JsonProperty("Workingtime_hdl")]
+        public string WorktimeMessageHeadline { get; set; }
+
         [JsonProperty("Workingtime")]
         public string WorktimeMessageHtml { get; set; }
+
+        [JsonProperty("Zablink")]
+        public string BookingUrl { get; set; }
 
         [JsonProperty("Desc")]
         public string DescriptionHtml { get; set; }
