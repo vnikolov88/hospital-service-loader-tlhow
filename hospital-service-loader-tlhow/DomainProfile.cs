@@ -80,6 +80,8 @@ namespace HospitalService.Loader.TLHOW
                 .ForMember(d => d.Pictures, o => o.MapFrom(s => s.Pictures))
                 .ForMember(d => d.SortOrder, o => o.MapFrom(s => s.SortOrder))
                 .ForMember(d => d.PersonalHeadline, o => o.MapFrom(s => s.PersonalHeadline))
+                .ForMember(d => d.BookingUrl, o => o.MapFrom(s => s.BookingUrl))
+                .ForMember(d => d.WorktimeMessageHeadline, o => o.MapFrom(s => s.WorktimeMessageHeadline))
                 .ForMember(d => d.WorktimeMessageHtml, o => o.MapFrom(s => s.WorktimeMessageHtml));
 
             CreateMap<Models.TLHOWCertificate, Contracts.V2.Certificate>()
