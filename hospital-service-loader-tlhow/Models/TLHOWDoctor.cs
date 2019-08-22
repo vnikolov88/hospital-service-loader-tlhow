@@ -5,7 +5,7 @@ namespace HospitalService.Loader.TLHOW.Models
     public class TLHOWDoctor
     {
         [JsonIgnore]
-        public string GUID => $"{Salutation},{FirstName},{LastName}".GetHashCode().ToString();
+        public string GUID => $"{Salutation},{FirstName},{LastName},{Specialty},{CVUrl},{Address?.Phone}".GetHashCode().ToString();
 
         [JsonProperty("FirstName")]
         public string FirstName { get; set; }
