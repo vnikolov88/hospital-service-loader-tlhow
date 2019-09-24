@@ -1,8 +1,8 @@
-FROM mcr.microsoft.com/dotnet/core/runtime:3.0-stretch-slim AS base
+FROM mcr.microsoft.com/dotnet/core/runtime:3.0 AS base
 WORKDIR /app
 
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0-stretch AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS build
 WORKDIR /src
 COPY ["hospital-service-loader-tlhow/hospital-service-loader-tlhow.csproj", "hospital-service-loader-tlhow/"]
 COPY nuget.config ./

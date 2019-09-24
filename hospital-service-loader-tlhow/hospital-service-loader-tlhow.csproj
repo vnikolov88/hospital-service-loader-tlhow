@@ -1,5 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
-
+<Project Sdk="Microsoft.NET.Sdk.Worker;Microsoft.NET.Sdk.Publish">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <UserSecretsId>dotnet-hospital_service_loader_tlhow-EC2B3C72-3CE2-471D-923A-79EE5FFF6D08</UserSecretsId>
@@ -7,17 +6,16 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <LangVersion>default</LangVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <Content Remove="NuGet.Config" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.1.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Consul" Version="0.7.2.6" />
     <PackageReference Include="Flurl.Http" Version="2.4.2" />
     <PackageReference Include="hospital-service-contracts" Version="2.2.6" />
+    <PackageReference Include="Microsoft.NETCore.Platforms" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.4.10" />
   </ItemGroup>
