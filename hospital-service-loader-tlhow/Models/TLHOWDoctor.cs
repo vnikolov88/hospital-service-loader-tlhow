@@ -26,6 +26,9 @@ namespace HospitalService.Loader.TLHOW.Models
         public TLHOWPicture[] Pictures { get; set; }
 
         [JsonProperty("CV")]
+        public string CV { get; set; }
+
+        [JsonProperty("CVlink")]
         public string CVUrl { get; set; }
     }
 }

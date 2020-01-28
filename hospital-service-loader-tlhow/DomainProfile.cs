@@ -51,6 +51,7 @@ namespace HospitalService.Loader.TLHOW
 
             CreateMap<Models.TLHOWDoctor, Contracts.V2.Doctor>()
                 .ForMember(d => d.Address, o => o.MapFrom(s => s.Address))
+                .ForMember(d => d.CVHtml, o => o.MapFrom(s => s.CV))
                 .ForMember(d => d.CVUrl, o => o.MapFrom(s => s.CVUrl))
                 .ForMember(d => d.FirstName, o => o.MapFrom(s => s.FirstName))
                 .ForMember(d => d.GUID, o => o.MapFrom(s => s.GUID))
@@ -72,7 +73,7 @@ namespace HospitalService.Loader.TLHOW
                 .ForMember(d => d.Address, o => o.MapFrom(s => s.Address))
                 .ForMember(d => d.Certificates, o => o.MapFrom(s => s.Certificates))
                 .ForMember(d => d.DepartmentClassification, o => o.MapFrom(s => s.DepartmentClassification))
-                .ForMember(d => d.DescriptionHtml, o => o.MapFrom(s => s.DescriptionHtml))
+                .ForMember(d => d.DescriptionHtml, o => o.MapFrom(s => $"<h1>{s.DescriptionHeadline}</h1><br/>{s.DescriptionHtml}<br/><h1>{s.Description2Headline}</h1><br/>{s.Description2Html}<br/><h1>{s.Description3Headline}</h1><br/>{s.Description3Html}<br/><h1>{s.Description4Headline}</h1><br/>{s.Description4Html}"))
                 .ForMember(d => d.Doctors, o => o.MapFrom(s => s.Doctors))
                 .ForMember(d => d.GUID, o => o.MapFrom(s => s.GUID))
                 .ForMember(d => d.Name, o => o.MapFrom(s => s.Name))
