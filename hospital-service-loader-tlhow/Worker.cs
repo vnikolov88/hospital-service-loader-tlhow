@@ -9,9 +9,22 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Consul;
+using Flurl.Http.Configuration;
+using System.Net.Http;
 
 namespace HospitalService.Loader.TLHOW
 {
+    public class UntrustedCertClientFactory : DefaultHttpClientFactory
+    {
+        public override HttpMessageHandler CreateMessageHandler()
+        {
+            return new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (a, b, c, d) => true
+            };
+        }
+    }
+
     public class Worker : BackgroundService
     {
         private readonly TimeSpan loadInterval;
@@ -47,6 +60,8 @@ namespace HospitalService.Loader.TLHOW
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            FlurlHttp.ConfigureClient(_options.DataExportUrl, cli =>
+                cli.Settings.HttpClientFactory = new UntrustedCertClientFactory());
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
